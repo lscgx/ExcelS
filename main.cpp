@@ -18,12 +18,6 @@ struct
      int     iStyle ;
      TCHAR * szText ;
 }
-//static char DATA[3][200] = {
-//    "C://Users//dy040//Desktop//合格在库三相四线低压表（220_380V).xls",
-//	"C://Users//dy040//Desktop//合格在库三相三线高压表（100V).xls",
-//	"C://Users//dy040//Desktop//合格在库三相四线高压表（57.7_100V).xls"
-//};
-
 button[10] =
 {
      BS_PUSHBUTTON, TEXT ("开始") ,
@@ -53,15 +47,7 @@ bool searchExcel(TCHAR  * str){
 	 //MessageBox(NULL, str,"Error!",MB_ICONEXCLAMATION|MB_OK);
 	 bool flag = false;
 	 Book* book = xlCreateBook();
-	 char NO[300]={"编码: "},SUCCESS[30]={" 查找成功"},FAIL[30]={" 查找失败"}; 
-//	 try
-//	 {
-//		 
-//     }catch(... )
-//	 {
-//	  // 处理 ExceptionName 异常的代码
-//	  	book->release();
-//	 }	 
+	 char NO[300]={"编码: "},SUCCESS[30]={" 查找成功"},FAIL[30]={" 查找失败"}; 	 
      try
 	 {
 	   // 保护代码
@@ -81,7 +67,7 @@ bool searchExcel(TCHAR  * str){
 								char st[100];ltoa(j+1,st,10);
 								strcat(NO," 的第_"); strcat(NO,st);    strcat(NO, "_行" );   
 								MessageBox(NULL,(TCHAR *)NO,"成功！",MB_ICONEXCLAMATION|MB_OK);
-		                 		//book->release();
+		                 		book->release();
 								return true;
 		                 	}
 		                 }
@@ -94,7 +80,6 @@ bool searchExcel(TCHAR  * str){
 		MessageBox(NULL,(TCHAR *)NO,"失败！",MB_ICONEXCLAMATION|MB_OK);
 	 }catch(... )
 	 {
-	  // 处理异常的代码
 	  	book->release();
 	 }
 	return false;
@@ -123,7 +108,6 @@ void checkLastOne(HWND hwnd){
 		book->release();
      }catch(... )
 	 {
-	  // 处理异常的代码
 	  	book->release();
 	 }
 }
@@ -149,7 +133,6 @@ void checkExcel(HWND hwnd){
 		book->release();
      }catch(... )
 	 {
-	  // 处理 ExceptionName 异常的代码
 	  	book->release();
 	 }
 
@@ -200,7 +183,6 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT Message, WPARAM wParam, LPARAM lParam) 
 		  SetTimer (hwnd, ID_TIMER, 1000, NULL) ;
           cxChar = LOWORD (GetDialogBaseUnits ()) ;
           cyChar = HIWORD (GetDialogBaseUnits ()) ;
-          //for (i = 0 ; i < NUM ; i++)
           hwndButton[0] = CreateWindow (TEXT("button"), 
                                button[0].szText,
                                WS_CHILD | WS_VISIBLE | button[0].iStyle,
@@ -236,68 +218,38 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT Message, WPARAM wParam, LPARAM lParam) 
                               hwnd, (HMENU) ID_LIST_2,
                               (HINSTANCE) GetWindowLong (hwnd, GWL_HINSTANCE),
                               NULL) ;
-         // FillListBox (hwndList_1,NULL) ;
-         hwnd2 = GetDlgItem(hwnd, 0);
-   		 SetWindowLong(hwnd2, GWL_STYLE, GetWindowLong(hwnd2, GWL_STYLE) | BS_OWNERDRAW);
-		break;
-//        case WM_SIZE :
-//		
-//          break;
-//          rect.left   = 1 ;
-//          rect.top    = 10;
-//          rect.right  = 100;
-//          rect.bottom = 100 ;
-//          return 0 ;
+          hwnd2 = GetDlgItem(hwnd, 0);
+   		  SetWindowLong(hwnd2, GWL_STYLE, GetWindowLong(hwnd2, GWL_STYLE) | BS_OWNERDRAW);
+		  break;
+        case WM_SIZE :
+          break;
 		case WM_PAINT :
-          //InvalidateRect (hwnd, &rect, TRUE) ;
-          
           hdc = BeginPaint (hwnd, &ps) ;
-          //SelectObject (hdc, GetStockObject (SYSTEM_FIXED_FONT)) ;
-          //SetBkMode (hdc, TRANSPARENT) ;
-          //绘制图表 
-//          for (y = 0 ; y < cyClient ; y += cyIcon)
-//               for (x = 0 ; x < cxClient ; x += cxIcon)
-//                    DrawIcon (hdc, x, y, hIcon) ;
-          //画底层边框 
           drawLines(hdc,cxChar,cyChar+255,55,600);
-//        TextOut (hdc, cxChar+10, cyChar +100+10, checkFile, lstrlen (checkFile)) ;
-//        TextOut (hdc, cxChar+400-80, cyChar +100+10, searchFile, lstrlen (searchFile)) ;
           TextOut (hdc, cxChar+10, cyChar +50+20 +300, "读取编码：", lstrlen ("读取编码：")) ;
           TextOut (hdc, cxChar+90, cyChar +50+20 +300, CURRENTNO, lstrlen (CURRENTNO)) ;  
           EndPaint (hwnd, &ps) ;
           return 0 ;
 	    case WM_COMMAND :
-          //ScrollWindow (hwnd, 0, -cyChar, &rect, &rect) ;
-          //
           switch(wParam){
           	case SWITCH:
           	  hdc = GetDC (hwndButton[0]) ;
-	          //SelectObject (hdc, GetStockObject (SYSTEM_FIXED_FONT)) ;
 	          flag=-flag;
 	          if(flag==-1){
 	          	SetWindowText(hwndButton[0],"运行中...(点击结束)");//开始
-	          	SWITCH_ALL=true;
-	//          hBrush = CreateSolidBrush (RGB(255,0,0)) ;
-	//          GetClientRect (hwndButton[0], &rect) ;
-	//	        FillRect (hdc, &rect, hBrush) ;
-	//	        DeleteObject (hBrush) ;
-    //          SetBkColor(hdc,GetSysColor(COLOR_3DLIGHT));//开始
-	//         SetTextColor(hdc,GetSysColor(COLOR_3DLIGHT)); 
+	          	SWITCH_ALL=true; 
 	          }else {
 	          	SWITCH_ALL=false;//关闭检测 
 	          	ExcelLen=0; //停止之后初始化 ExcelLen
 	          	SetWindowText(hwndButton[0],"开始");
 	          }
-	          //checkLastOne();
 	          ReleaseDC (hwnd, hdc) ;
-	          //ValidateRect (hwnd, &rect) ;
 	          InvalidateRect (hwnd, NULL, TRUE) ;
           	  break;
           	case FILE1:
           		if(FileDialog(szFile))
 				{
 					ClearListBox(hwndList_1);
-					//FillListBox (hwndList_1,szFile) ;
  					len =strlen(szFile),len2=0;//index
  					for(i=0;i<len;i++) {
  						if(szFile[i]=='\\') index=i;
@@ -317,16 +269,13 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT Message, WPARAM wParam, LPARAM lParam) 
  						}
  					}
  					LIST_1_PATH[len2]='\0';
- 					//MessageBox(NULL, LIST_1_PATH,"Error!",MB_ICONEXCLAMATION|MB_OK);
 					FillListBox (hwndList_1,list1) ;
 					ExcelLen=0; //更换文件之后之后初始化 ExcelLen
-					//strcpy(LIST_1_PATH,szFile);
 				}
           		break;
           	case FILE2:
           		if(FileDialog(szFile))
 				{
-					//FillListBox (hwndList_2,szFile) ;
 					len =strlen(szFile),len2=0;
 					for(i=0;i<len;i++) {
  						if(szFile[i]=='\\') index=i;
@@ -347,12 +296,10 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT Message, WPARAM wParam, LPARAM lParam) 
  					}
  					LIST_2_PATH[cnt][len2]='\0';
  					FillListBox (hwndList_2,list2[cnt]) ;
-					//strcpy(LIST_2_PATH[cnt],szFile);
 					cnt +=1;
 				}
           		break;
           }
-		  
           break ;
 		case WM_SYSCOLORCHANGE:
 			InvalidateRect (hwnd, NULL, TRUE) ;
@@ -368,13 +315,10 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT Message, WPARAM wParam, LPARAM lParam) 
 			break;
 		}
 		case WM_CTLCOLORBTN :
- 
-        if ((HWND)lParam == GetDlgItem(hwnd, 0))
+        	if ((HWND)lParam == GetDlgItem(hwnd, 0))
 	        {
 	            HWND hwnd2 = (HWND)lParam;
 	            HDC hdc = (HDC)wParam;
-//	           	HBRUSH g_brush=CreateSolidBrush(GetSysColor(COLOR_3DLIGHT));
-//	           	HBRUSH g_brush=CreateSolidBrush(GetSysColor(COLOR_3DLIGHT));
 				RECT rc;
 	            TCHAR text[64];
 	 
